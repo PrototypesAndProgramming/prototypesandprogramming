@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — prototypesandprogramming</title>
+  <meta name="description" content="Writing about robotics, machine learning, and things I'm building." />
+  <link rel="icon" href="images/favicon-32.png" />
+  <link rel="apple-touch-icon" href="images/favicon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="blog">
+  <div id="site-nav"></div>
+
+  <div class="page-hero">
+    <div class="container">
+      <span class="section-tag">Notes &amp; writeups</span>
+      <h1>Blog</h1>
+      <p>Project logs, things I've learned, and whatever else is on my mind.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="container">
+      <div class="post-list" id="postList">
+        <div class="loading-state">Loading posts…</div>
+      </div>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/markdown.js"></script>
+  <script src="js/blog.js"></script>
+  <script>
+    (async () => {
+      const listEl = document.getElementById("postList");
+      try {
+        const posts = await window.BlogEngine.loadAllPosts();
+        if (!posts.length) {
+          listEl.innerHTML = `<div class="empty-state">No posts yet — check back soon.</div>`;
+          return;
+        }
+        listEl.innerHTML = posts
+          .map(
+            (p) => `
+          <a class="post-row" href="post.html?slug=${encodeURIComponent(p.slug)}" style="text-decoration:none;color:inherit;">
+            <span class="post-date">${window.BlogEngine.formatDate(p.date)}</span>
+            <div class="post-info">
+              <h3>${p.title}</h3>
+              <p>${p.excerpt}</p>
+              ${p.tags.length ? `<div class="post-tags">${p.tags.map((t) => `<span class="tag">${t}</span>`).join("")}</div>` : ""}
+            </div>
+          </a>`
+          )
+          .join("");
+      } catch (e) {
+        listEl.innerHTML = `<div class="error-state">Couldn't load posts right now. Check your GitHub config in js/config.js.</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

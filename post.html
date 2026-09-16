@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Post — prototypesandprogramming</title>
+  <link rel="icon" href="images/favicon-32.png" />
+  <link rel="apple-touch-icon" href="images/favicon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="blog">
+  <div id="site-nav"></div>
+
+  <section>
+    <div class="container">
+      <a href="blog.html" class="back-link">Back to blog</a>
+      <article class="post-article" id="postArticle">
+        <div class="loading-state">Loading post…</div>
+      </article>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/markdown.js"></script>
+  <script src="js/blog.js"></script>
+  <script>
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get("slug");
+      const articleEl = document.getElementById("postArticle");
+      if (!slug) {
+        articleEl.innerHTML = `<div class="error-state">No post specified.</div>`;
+        return;
+      }
+      try {
+        const files = await window.BlogEngine.listPostFiles();
+        const match = files.find((f) => f.name.replace(/\.md$/, "") === slug);
+        if (!match) {
+          articleEl.innerHTML = `<div class="error-state">Post not found.</div>`;
+          return;
+        }
+        const post = await window.BlogEngine.fetchPost(match);
+        document.getElementById("pageTitle").textContent = `${post.title} — prototypesandprogramming`;
+        articleEl.innerHTML = `
+          <div class="post-meta">${window.BlogEngine.formatDate(post.date)}${post.tags.length ? " · " + post.tags.join(", ") : ""}</div>
+          <h1>${post.title}</h1>
+          <div class="post-body">${window.renderMarkdown(post.body)}</div>
+        `;
+      } catch (e) {
+        console.error(e);
+        articleEl.innerHTML = `<div class="error-state">Couldn't load this post right now.</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>
