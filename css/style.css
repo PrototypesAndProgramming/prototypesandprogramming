@@ -4,19 +4,19 @@
    ============================================ */
 
 :root {
-  --bg: #e6dddb;
-  --bg-alt: #dcd2cf;
-  --ink: #1c1c1c;
-  --ink-soft: #4a4644;
-  --navy: #00307e;
-  --navy-dark: #002461;
-  --sky: #72aecb;
-  --sky-dark: #4f93b3;
-  --red: #ac1a17;
-  --red-dark: #8a1512;
-  --card-bg: #f2ece9;
-  --border: rgba(28, 28, 28, 0.12);
-  --shadow: 0 10px 30px rgba(0, 24, 66, 0.12);
+  --bg: #1c1c1c;
+  --bg-alt: #262626;
+  --ink: #ece5e2;
+  --ink-soft: #a39d9a;
+  --navy: #4d7fd9;
+  --navy-dark: #6f97e0;
+  --sky: #7dc0e0;
+  --sky-dark: #58a5cc;
+  --red: #e2564e;
+  --red-dark: #c73f38;
+  --card-bg: #242424;
+  --border: rgba(255, 255, 255, 0.1);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
   --radius: 14px;
   --max-width: 1080px;
   --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
@@ -63,7 +63,7 @@ p { margin: 0 0 1em; }
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(230, 221, 219, 0.85);
+  background: rgba(28, 28, 28, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
@@ -178,8 +178,8 @@ p { margin: 0 0 1em; }
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--red);
-  background: rgba(172, 26, 23, 0.08);
-  border: 1px solid rgba(172, 26, 23, 0.25);
+  background: rgba(226, 86, 78, 0.12);
+  border: 1px solid rgba(226, 86, 78, 0.3);
   padding: 6px 14px;
   border-radius: 999px;
   margin-bottom: 24px;
@@ -330,7 +330,7 @@ section { padding: 70px 0; }
 .card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow);
-  border-color: rgba(0, 48, 126, 0.25);
+  border-color: rgba(77, 127, 217, 0.35);
 }
 
 .card .card-bar {
@@ -374,9 +374,9 @@ section { padding: 70px 0; }
   font-size: 0.75rem;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(0, 48, 126, 0.08);
-  color: var(--navy);
-  border: 1px solid rgba(0, 48, 126, 0.18);
+  background: rgba(77, 127, 217, 0.14);
+  color: var(--navy-dark);
+  border: 1px solid rgba(77, 127, 217, 0.3);
 }
 
 .card-links {
@@ -466,8 +466,8 @@ section { padding: 70px 0; }
   font-style: italic;
 }
 .post-body pre {
-  background: var(--ink);
-  color: #f2ece9;
+  background: #111111;
+  color: #ece5e2;
   padding: 18px 20px;
   border-radius: 10px;
   overflow-x: auto;
@@ -477,7 +477,7 @@ section { padding: 70px 0; }
 }
 .post-body code {
   font-family: var(--font-mono);
-  background: rgba(0, 48, 126, 0.08);
+  background: rgba(77, 127, 217, 0.16);
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.9em;
@@ -504,7 +504,7 @@ section { padding: 70px 0; }
   font-family: var(--font-mono);
   font-size: 0.95rem;
 }
-.error-state { color: var(--red-dark); border-color: rgba(172,26,23,0.3); }
+.error-state { color: var(--red); border-color: rgba(226, 86, 78, 0.35); }
 
 /* ---------- Footer ---------- */
 

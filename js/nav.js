@@ -4,7 +4,7 @@
     <nav class="site-nav">
       <div class="container">
         <a href="/" class="brand">
-          <img src="/images/logo.png" alt="logo" />
+          <img src="/images/logo-transparent.png" alt="logo" />
           <span>prototypesandprogramming</span>
         </a>
         <button class="nav-toggle" aria-label="Toggle navigation" id="navToggle">
