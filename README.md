@@ -3,35 +3,20 @@
 Your personal site: home page, projects, and a blog you publish to just by
 adding markdown files. Plain HTML/CSS/JS — no build step, no framework.
 
-## 1. Put this on GitHub
+**Status:** this is already pushed to
+[github.com/PrototypesAndProgramming/prototypesandprogramming](https://github.com/PrototypesAndProgramming/prototypesandprogramming)
+on the `main` branch, and GitHub Pages is turned on with the custom domain
+set to `prototypesandprogramming.com`. `js/config.js` is already pointed at
+that repo. The only thing left is pointing your domain's DNS at GitHub Pages
+(step below) — do that and the site goes live.
 
-1. Create a new **public** repo on GitHub (e.g. `prototypesandprogramming`).
-2. Push everything in this folder to that repo's `main` branch.
-3. Open `js/config.js` and set `githubUser` / `githubRepo` / `githubBranch`
-   to match the repo you just created. This is what lets the blog page find
-   your posts automatically.
+To make future changes, clone the repo and push commits as normal:
 
 ```bash
-git init
-git add .
-git commit -m "Initial site"
-git branch -M main
-git remote add origin https://github.com/<you>/<repo>.git
-git push -u origin main
+git clone https://github.com/PrototypesAndProgramming/prototypesandprogramming.git
 ```
 
-## 2. Turn on GitHub Pages
-
-1. In the repo, go to **Settings → Pages**.
-2. Under "Build and deployment", set **Source** to `Deploy from a branch`,
-   branch `main`, folder `/ (root)`. Save.
-3. Under "Custom domain", enter `prototypesandprogramming.com` and save.
-   (There's already a `CNAME` file in this repo with that domain in it,
-   which is what makes this work.)
-4. Check "Enforce HTTPS" once it becomes available (can take a few minutes
-   to an hour after DNS is set up).
-
-## 3. Point your domain at GitHub Pages (in Sav's DNS settings)
+## 1. Point your domain at GitHub Pages (in Sav's DNS settings)
 
 In Sav, open DNS management for `prototypesandprogramming.com` and add:
 
@@ -50,13 +35,13 @@ work too) — a CNAME record:
 
 | Type  | Host | Value                    |
 |-------|------|--------------------------|
-| CNAME | www  | `<you>.github.io`        |
+| CNAME | www  | `prototypesandprogramming.github.io` |
 
 DNS changes can take anywhere from a few minutes to a few hours to
 propagate. Once they do, `prototypesandprogramming.com` will serve this
 site directly from GitHub Pages, for free.
 
-## 4. Publishing a new blog post
+## 2. Publishing a new blog post
 
 1. Add a new file to `posts/`, named like `2026-10-01-my-post-title.md`.
 2. Give it frontmatter + content:
@@ -78,13 +63,13 @@ site directly from GitHub Pages, for free.
    be reached — you don't need to touch it once `js/config.js` is set up
    correctly, but it's a handy way to test locally before you push.)
 
-## 5. Adding a project
+## 3. Adding a project
 
 Open `js/projects-data.js` and add an object to the `PROJECTS` array —
 title, image, tags, description, and an optional link. The projects page
 and the homepage's "featured" section both render from this one file.
 
-## 6. Editing your info
+## 4. Editing your info
 
 - `about.html` — bio, resume link, socials.
 - `js/nav.js` — nav bar links and footer (name, GitHub/LinkedIn links).

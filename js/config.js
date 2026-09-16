@@ -5,7 +5,7 @@
 // via the GitHub API — nothing else depends on them.
 // ============================================================
 window.SITE_CONFIG = {
-  githubUser: "NathanaelOliver", // <-- change to your GitHub username
-  githubRepo: "prototypesandprogramming", // <-- change to your repo name
+  githubUser: "PrototypesAndProgramming",
+  githubRepo: "prototypesandprogramming",
   githubBranch: "main",
 };
