@@ -8,7 +8,7 @@ import { rgba } from '../colors.js';
 const GUTTER = 40;
 const STRIP = 14; // left strip that labels a parent whose sub-events are shown
 
-export default function DayView({ data, prefs, setPrefs, start, setStart, onOpenEvent, onOpenGoal, onCreate, status }) {
+export default function DayView({ data, prefs, setPrefs, start, setStart, onOpenEvent, onOpenGoal, onCreate, status, onSync }) {
   const bodyRef = useRef(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [now, setNow] = useState(() => new Date());
@@ -28,8 +28,8 @@ export default function DayView({ data, prefs, setPrefs, start, setStart, onOpen
   }, []);
 
   const days = prefs.days;
-  const rs = prefs.dayStart * 60;
-  const re = prefs.dayEnd * 60;
+  const rs = 0;
+  const re = 24 * 60;
   const ppm = size.h > 0 ? size.h / (re - rs) : 0;
   const colW = size.w > 0 ? (size.w - GUTTER) / days : 0;
   const dates = Array.from({ length: days }, (_, i) => addDays(start, i));
@@ -37,7 +37,7 @@ export default function DayView({ data, prefs, setPrefs, start, setStart, onOpen
   const deadlines = useMemo(() => allDeadlines(data), [data]);
 
   const hours = [];
-  for (let h = prefs.dayStart; h <= prefs.dayEnd; h++) hours.push(h);
+  for (let h = 0; h <= 24; h++) hours.push(h);
   const hourStep = ppm * 60 < 22 ? 2 : 1;
 
   const monthLabel = fmtDate(start, { month: size.w >= 500 ? 'long' : 'short', year: 'numeric' });
@@ -56,12 +56,15 @@ export default function DayView({ data, prefs, setPrefs, start, setStart, onOpen
           />
           <span>{days}d</span>
         </label>
-        <span className={`sync-dot ${status}`} title={status} />
+        <button className="sync-btn" onClick={onSync} title={`Sync: ${status} (tap to sync now)`}>
+          <span className={`sync-dot ${status}`} />
+        </button>
       </div>
 
       <div className="colheads" style={{ paddingLeft: GUTTER }}>
         {dates.map((d) => {
-          const dl = deadlinesForDay(deadlines, d).filter((x) => !x.time || d !== x.date);
+          const dl = deadlinesForDay(deadlines, d).sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+          const maxChips = days > 3 ? 2 : 4;
           return (
             <div key={d} className={`colhead ${d === today ? 'today' : ''}`} style={{ width: colW }}>
               <button
@@ -81,17 +84,17 @@ export default function DayView({ data, prefs, setPrefs, start, setStart, onOpen
               </button>
               {dl.length > 0 && (
                 <div className="chips">
-                  {dl.slice(0, days > 3 ? 1 : 3).map((x) => (
+                  {dl.slice(0, maxChips).map((x) => (
                     <button
                       key={x.path.map((p) => p.id).join('/')}
                       className={`chip ${x.done ? 'done' : ''} ${!x.done && x.date < today ? 'overdue' : ''}`}
                       style={{ borderColor: x.color || 'var(--navy)' }}
                       onClick={() => onOpenGoal(x.path)}
                     >
-                      ⚑ {x.node.title}
+                      {x.time && x.date === d && colW >= 90 && <span className="chip-time">{x.time}</span>}⚑ {x.node.title}
                     </button>
                   ))}
-                  {dl.length > (days > 3 ? 1 : 3) && <span className="chip more">+{dl.length - (days > 3 ? 1 : 3)}</span>}
+                  {dl.length > maxChips && <span className="chip more">+{dl.length - maxChips}</span>}
                 </div>
               )}
             </div>
@@ -102,7 +105,7 @@ export default function DayView({ data, prefs, setPrefs, start, setStart, onOpen
       <div className="grid" ref={bodyRef}>
         <div className="gutter" style={{ width: GUTTER }}>
           {hours.map((h) =>
-            (h - prefs.dayStart) % hourStep === 0 && h < prefs.dayEnd ? (
+            h % hourStep === 0 && h < 24 ? (
               <div key={h} className="hourlabel" style={{ top: (h * 60 - rs) * ppm }}>
                 {fmtTime(fromMinutes(h * 60))}
               </div>
@@ -178,15 +181,15 @@ function DayColumn({ dateKey, data, deadlines, left, width, ppm, rs, re, isToday
         return (
           <button
             key={x.path.map((p) => p.id).join('/')}
+            title={`⚑ ${x.node.title} ${x.time}`}
+            aria-label={`Deadline: ${x.node.title}`}
             className={`deadline-line ${x.done ? 'done' : ''}`}
             style={{ top: (m - rs) * ppm, borderColor: x.color || 'var(--red)' }}
             onClick={(e) => {
               e.stopPropagation();
               onOpenGoal(x.path);
             }}
-          >
-            {width > 60 && <span>⚑ {x.node.title}</span>}
-          </button>
+          />
         );
       })}
       {isToday && nowMin >= rs && nowMin <= re && <div className="nowline" style={{ top: (nowMin - rs) * ppm }} />}
@@ -254,7 +257,8 @@ function EventBox({ occ, clipStart, clipEnd, top, left, width, ppm, dateKey, col
   const hidden = countDescendants(occ);
   const showTitle = height >= 13 && width >= 16;
   const showTime = height >= 30 && width >= 44;
-  const showNotes = height >= 58 && width >= 60 && occ.ev.notes;
+  const showLoc = height >= 44 && width >= 50 && occ.ev.location;
+  const showNotes = height >= 72 && width >= 60 && occ.ev.notes;
   return (
     <div className="evbox" style={style} onClick={open} title={occ.ev.title}>
       {showTitle && (
@@ -269,6 +273,7 @@ function EventBox({ occ, clipStart, clipEnd, top, left, width, ppm, dateKey, col
           {fmtTime(occ.ev.start)}–{fmtTime(occ.ev.end)}
         </div>
       )}
+      {showLoc && <div className="evtime">📍 {occ.ev.location}</div>}
       {showNotes && <div className="evnotes">{occ.ev.notes}</div>}
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { describeRepeat, fmtDate, fmtTime, isRepeating, toMinutes, weekday, WEEKDAYS } from '../recurrence.js';
 import { addNode, getChain, getNode, patchNode, progress, removeNode } from '../tree.js';
-import { Breadcrumb, ColorPicker, DayToggles, Field, ProgressBar, Sheet } from './ui.jsx';
+import { Breadcrumb, ColorPicker, DayToggles, Field, ProgressBar, Sheet, TimeInput } from './ui.jsx';
 
 /**
  * sheet = { type:'event', path, dateKey }                       view existing
@@ -54,6 +54,7 @@ function EventDetail({ sheet, data, node, update, open, onClose }) {
         {fmtTime(node.start)}–{fmtTime(node.end)}
         {dateKey && <> · {fmtDate(dateKey)}</>}
       </div>
+      {node.location && <div className="meta">📍 {node.location}</div>}
       {repeatText && <div className="meta">↻ {repeatText}</div>}
       {!isRoot && node.days && node.days.length > 0 && (
         <div className="meta">Only on {node.days.map((d) => WEEKDAYS[d]).join(', ')}</div>
@@ -117,7 +118,7 @@ function EventEditor({ sheet, data, node, update, open, onClose }) {
     if (node) return { ...node, repeat: { freq: 'none', interval: 1, days: [], until: '', ...(node.repeat || {}) } };
     const d = sheet.draft || {};
     return {
-      title: '', notes: '', color: isRoot ? '#4d7fd9' : null,
+      title: '', notes: '', location: '', color: isRoot ? '#4d7fd9' : null,
       start: d.start || '09:00', end: d.end || '10:00',
       date: sheet.dateKey, days: [], skip: [],
       repeat: { freq: 'none', interval: 1, days: [], until: '' },
@@ -132,7 +133,7 @@ function EventEditor({ sheet, data, node, update, open, onClose }) {
   const save = () => {
     if (badTime) return;
     const fields = {
-      title: f.title.trim() || 'Untitled', notes: f.notes, color: f.color, start: f.start, end: f.end, skip: f.skip || [],
+      title: f.title.trim() || 'Untitled', notes: f.notes, location: (f.location || '').trim(), color: f.color, start: f.start, end: f.end, skip: f.skip || [],
     };
     if (isRoot) {
       fields.date = f.date;
@@ -166,10 +167,13 @@ function EventEditor({ sheet, data, node, update, open, onClose }) {
         <input autoFocus value={f.title} onChange={(e) => set({ title: e.target.value })} placeholder="e.g. School" />
       </Field>
       <div className="row2">
-        <Field label="Start"><input type="time" value={f.start} onChange={(e) => set({ start: e.target.value })} /></Field>
-        <Field label="End"><input type="time" value={f.end} onChange={(e) => set({ end: e.target.value })} /></Field>
+        <Field label="Start"><TimeInput value={f.start} onChange={(start) => set({ start })} /></Field>
+        <Field label="End"><TimeInput value={f.end} onChange={(end) => set({ end })} /></Field>
       </div>
       {badTime && <div className="warn">End has to be after start.</div>}
+      <Field label="Location">
+        <input value={f.location || ''} onChange={(e) => set({ location: e.target.value })} placeholder="e.g. Room 214" />
+      </Field>
       {outside && <div className="warn">Outside {parent.title} ({fmtTime(parent.start)}–{fmtTime(parent.end)}); the part outside won't show.</div>}
 
       {isRoot ? (

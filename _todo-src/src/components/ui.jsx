@@ -83,3 +83,33 @@ export function ProgressBar({ done, total, color }) {
     </div>
   );
 }
+
+/**
+ * 24-hour time picker (phones show native time inputs in 12-hour format, so this
+ * uses two selects instead). value "HH:MM" or '' when allowEmpty.
+ */
+export function TimeInput({ value, onChange, allowEmpty }) {
+  const [h, m] = value ? value.split(':') : ['', ''];
+  const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
+  const mins = Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, '0'));
+  if (m && !mins.includes(m)) mins.push(m), mins.sort();
+  return (
+    <div className="timeinput">
+      <select
+        value={h}
+        onChange={(e) => {
+          const nh = e.target.value;
+          onChange(nh === '' ? '' : `${nh}:${m || '00'}`);
+        }}
+      >
+        {allowEmpty && <option value="">--</option>}
+        {hours.map((x) => <option key={x} value={x}>{x}</option>)}
+      </select>
+      <span>:</span>
+      <select value={m} disabled={!h} onChange={(e) => onChange(`${h || '00'}:${e.target.value}`)}>
+        {(allowEmpty && !h) && <option value="">--</option>}
+        {mins.map((x) => <option key={x} value={x}>{x}</option>)}
+      </select>
+    </div>
+  );
+}

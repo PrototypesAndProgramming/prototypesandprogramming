@@ -23,17 +23,18 @@ A file called `data.json` in a **private** repo (default `PrototypesAndProgrammi
 read and written through the GitHub API with a fine-grained token that is stored only
 in each browser you unlock it on. The public site holds no data at all.
 
-"Lock / sign out" in Settings removes the token and the cached copy from that device.
+If the token expires or is revoked, the app goes back to the unlock screen.
+Tap the sync dot (top right) to sync immediately.
 
 ## Data shape
 
 ```
-events[]   { id, title, start "HH:MM", end, date, repeat{freq,interval,days[],until}, skip[],
+events[]   { id, title, location, start "HH:MM", end, date, repeat{freq,interval,days[],until}, skip[],
              color, notes, children[] (sub-events: same shape, + days[] filter, no date/repeat),
              goals[] (deadline trees) }
 projects[] { id, title, deadline, time, done, color, notes, children[] (ordered steps, same shape) }
 ```
 
 Top-level items carry `updatedAt` so edits from phone and computer merge cleanly.
-Settings → Export JSON gives you a full backup (and is the path to move the data into
-a native app later).
+To back up or inspect the data, open `data.json` in the todo-data repo; every save is a
+commit, so the full history is there.

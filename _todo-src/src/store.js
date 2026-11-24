@@ -21,7 +21,7 @@ function save(key, v) {
   }
 }
 
-export const DEFAULT_PREFS = { dayStart: 6, dayEnd: 23, days: 1 };
+export const DEFAULT_PREFS = { days: 1 };
 
 export function usePrefs() {
   const [prefs, setPrefs] = useState(() => ({ ...DEFAULT_PREFS, ...load(LS_PREFS, {}) }));
@@ -93,6 +93,12 @@ export function useStore() {
       setError(null);
       setStatus('saved');
     } catch (e) {
+      if (e.status === 401) {
+        // token expired or revoked -> back to the unlock screen
+        setConfig(null);
+        busy.current = false;
+        return;
+      }
       setError(e.message);
       setStatus(navigator.onLine ? 'error' : 'offline');
     } finally {

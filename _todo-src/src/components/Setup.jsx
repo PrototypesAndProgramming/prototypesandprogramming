@@ -39,9 +39,6 @@ export default function Setup({ onDone, initial }) {
         </label>
         {msg && <div className="warn">{msg}</div>}
         <button className="btn primary" disabled={busy || !token}>{busy ? 'Checking…' : 'Connect'}</button>
-        <button type="button" className="btn ghost" onClick={() => onDone({ local: true })}>
-          Use on this device only (no sync)
-        </button>
       </form>
     </div>
   );

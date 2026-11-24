@@ -129,11 +129,12 @@ main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   position: absolute; left: 0; right: 0; height: 0; border: 0; border-top: 2px dashed; background: none;
   padding: 0; z-index: 3;
 }
-.deadline-line span {
-  position: absolute; right: 2px; top: -9px; font-size: 10px; background: var(--bg); padding: 0 4px; border-radius: 4px;
-  white-space: nowrap; max-width: 95%; overflow: hidden; text-overflow: ellipsis;
-}
 .deadline-line.done { opacity: 0.35; }
+.deadline-line::after { content: ''; position: absolute; left: 0; right: 0; top: -7px; height: 14px; }
+.chip-time { color: var(--ink-soft); margin-right: 4px; font-variant-numeric: tabular-nums; }
+.sync-btn { background: none; border: 0; padding: 8px 4px; display: flex; }
+.timeinput { display: flex; align-items: center; gap: 4px; }
+.timeinput select { flex: 1; text-align: center; font-variant-numeric: tabular-nums; }
 
 /* ---------- sheets ---------- */
 .sheet-backdrop {

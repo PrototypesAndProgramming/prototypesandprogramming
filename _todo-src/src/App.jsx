@@ -3,7 +3,6 @@ import { todayKey, fromMinutes, toMinutes } from './recurrence.js';
 import { useStore, usePrefs } from './store.js';
 import DayView from './components/DayView.jsx';
 import ProjectsView from './components/ProjectsView.jsx';
-import SettingsView from './components/SettingsView.jsx';
 import Setup from './components/Setup.jsx';
 import EventSheet from './components/EventSheet.jsx';
 import GoalSheet from './components/GoalSheet.jsx';
@@ -31,6 +30,7 @@ export default function App() {
             start={start}
             setStart={setStart}
             status={store.status}
+            onSync={store.sync}
             onOpenEvent={(path, dateKey) => setSheet({ type: 'event', path, dateKey })}
             onOpenGoal={(path) => setSheet({ type: 'goal', path })}
             onCreate={(dateKey, s) =>
@@ -39,7 +39,6 @@ export default function App() {
           />
         )}
         {tab === 'projects' && <ProjectsView data={store.data} open={setSheet} />}
-        {tab === 'settings' && <SettingsView store={store} prefs={prefs} setPrefs={setPrefs} />}
       </main>
 
       {tab === 'day' && (
@@ -55,7 +54,6 @@ export default function App() {
       <nav className="tabbar">
         <button className={tab === 'day' ? 'on' : ''} onClick={() => setTab('day')}>Calendar</button>
         <button className={tab === 'projects' ? 'on' : ''} onClick={() => setTab('projects')}>Projects</button>
-        <button className={tab === 'settings' ? 'on' : ''} onClick={() => setTab('settings')}>Settings</button>
       </nav>
 
       {sheet?.type === 'event' && <EventSheet key={JSON.stringify(sheet)} {...sheetProps} />}

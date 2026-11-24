@@ -3,7 +3,7 @@ import { daysBetween, fmtDate, fmtTime, todayKey } from '../recurrence.js';
 import {
   activeIndex, addNode, getChain, getNode, isDone, moveNode, nextUp, orderWarnings, patchNode, progress, removeNode,
 } from '../tree.js';
-import { Breadcrumb, ColorPicker, Field, ProgressBar, Sheet } from './ui.jsx';
+import { Breadcrumb, ColorPicker, Field, ProgressBar, Sheet, TimeInput } from './ui.jsx';
 
 export function dueLabel(date) {
   if (!date) return '';
@@ -166,7 +166,7 @@ function GoalEditor({ sheet, data, node, update, open, onClose }) {
           <input type="date" value={f.deadline || ''} onChange={(e) => set({ deadline: e.target.value })} />
         </Field>
         <Field label="Time (optional)">
-          <input type="time" value={f.time || ''} onChange={(e) => set({ time: e.target.value })} />
+          <TimeInput allowEmpty value={f.time || ''} onChange={(time) => set({ time })} />
         </Field>
       </div>
       <Field label={isTop ? 'Color' : 'Color (∅ = same as parent)'}>

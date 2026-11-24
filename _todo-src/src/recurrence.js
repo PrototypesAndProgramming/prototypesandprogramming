@@ -52,13 +52,9 @@ export function fromMinutes(min) {
   return `${pad(Math.floor(min / 60))}:${pad(min % 60)}`;
 }
 
+// 24-hour clock everywhere
 export function fmtTime(hhmm) {
-  const min = toMinutes(hhmm);
-  let h = Math.floor(min / 60);
-  const m = min % 60;
-  const ap = h >= 12 ? 'p' : 'a';
-  h = h % 12 || 12;
-  return m ? `${h}:${pad(m)}${ap}` : `${h}${ap}`;
+  return fromMinutes(toMinutes(hhmm));
 }
 
 export function fmtDate(key, opts = { weekday: 'short', month: 'short', day: 'numeric' }) {
