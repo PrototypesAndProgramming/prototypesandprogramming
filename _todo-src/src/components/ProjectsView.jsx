@@ -50,7 +50,7 @@ export default function ProjectsView({ data, open }) {
                   {d.node.title}
                   <span className="row-ctx">{d.labels.slice(0, -1).join(' › ')}</span>
                 </span>
-                <span className="row-side">{d.done ? '✓' : `${fmtDate(d.date, { month: 'short', day: 'numeric' })}${p.total > 1 ? ` · ${p.done}/${p.total}` : ''}`}</span>
+                <span className="row-side">{d.done ? '✓' : `${fmtDate(d.date)}${p.total > 1 ? ` · ${p.done}/${p.total}` : ''}`}</span>
               </button>
             );
           })}
@@ -77,7 +77,7 @@ function ProjectCard({ p, open, today }) {
         <span className="card-title">{p.title}</span>
         {p.deadline && (
           <span className={`row-side ${!done && p.deadline < today ? 'overdue-text' : ''}`}>
-            {fmtDate(p.deadline, { month: 'short', day: 'numeric' })}{!done && ` · ${dueLabel(p.deadline)}`}
+            {fmtDate(p.deadline)}{!done && ` · ${dueLabel(p.deadline)}`}
           </span>
         )}
       </div>

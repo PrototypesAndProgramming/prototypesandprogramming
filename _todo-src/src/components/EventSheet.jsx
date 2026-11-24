@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { describeRepeat, fmtDate, fmtTime, isRepeating, toMinutes, weekday, WEEKDAYS } from '../recurrence.js';
 import { addNode, getChain, getNode, patchNode, progress, removeNode } from '../tree.js';
-import { Breadcrumb, ColorPicker, DayToggles, Field, ProgressBar, Sheet, TimeInput } from './ui.jsx';
+import { Breadcrumb, ColorPicker, DayToggles, Field, ProgressBar, Sheet, TimeInput, DateInput } from './ui.jsx';
 
 /**
  * sheet = { type:'event', path, dateKey }                       view existing
@@ -44,7 +44,7 @@ function EventDetail({ sheet, data, node, update, open, onClose }) {
       actions={
         <>
           <button className="btn" onClick={() => open({ ...sheet, edit: true })}>Edit</button>
-          {partOfSeries && dateKey && <button className="btn" onClick={skipDay}>Skip {fmtDate(dateKey, { month: 'short', day: 'numeric' })}</button>}
+          {partOfSeries && dateKey && <button className="btn" onClick={skipDay}>Skip {fmtDate(dateKey)}</button>}
           <button className="btn danger" onClick={del}>Delete</button>
         </>
       }
@@ -52,7 +52,7 @@ function EventDetail({ sheet, data, node, update, open, onClose }) {
       <Breadcrumb chain={chain} onPick={(i) => open({ type: 'event', path: path.slice(0, i + 1), dateKey })} />
       <div className="meta">
         {fmtTime(node.start)}–{fmtTime(node.end)}
-        {dateKey && <> · {fmtDate(dateKey)}</>}
+        {dateKey && <> · {fmtDate(dateKey, { weekday: true })}</>}
       </div>
       {node.location && <div className="meta">📍 {node.location}</div>}
       {repeatText && <div className="meta">↻ {repeatText}</div>}
@@ -80,7 +80,7 @@ function EventDetail({ sheet, data, node, update, open, onClose }) {
         return (
           <button key={g.id} className="row" onClick={() => open({ type: 'goal', path: [...path, { key: 'goals', id: g.id }] })}>
             <span className="row-main">⚑ {g.title}</span>
-            <span className="row-side">{g.deadline ? fmtDate(g.deadline, { month: 'short', day: 'numeric' }) : ''}</span>
+            <span className="row-side">{g.deadline ? fmtDate(g.deadline) : ''}</span>
             {p.total > 1 && <ProgressBar {...p} color={node.color} />}
           </button>
         );
@@ -179,7 +179,7 @@ function EventEditor({ sheet, data, node, update, open, onClose }) {
       {isRoot ? (
         <>
           <Field label={f.repeat.freq === 'none' ? 'Date' : 'Starts'}>
-            <input type="date" value={f.date} onChange={(e) => set({ date: e.target.value })} />
+            <DateInput value={f.date} onChange={(date) => set({ date })} />
           </Field>
           <Field label="Repeats">
             <select
@@ -206,7 +206,7 @@ setRepeat({ freq: e.target.value })
                   <input type="number" min="1" value={f.repeat.interval} onChange={(e) => setRepeat({ interval: Number(e.target.value) || 1 })} />
                 </Field>
                 <Field label="Until (optional)">
-                  <input type="date" value={f.repeat.until || ''} onChange={(e) => setRepeat({ until: e.target.value })} />
+                  <DateInput allowEmpty placeholder="none" value={f.repeat.until || ''} onChange={(until) => setRepeat({ until })} />
                 </Field>
               </div>
             </>
@@ -230,7 +230,7 @@ setRepeat({ freq: e.target.value })
           <div className="chips wrap">
             {f.skip.slice().sort().map((s) => (
               <button type="button" key={s} className="chip" onClick={() => set({ skip: f.skip.filter((x) => x !== s) })}>
-                {fmtDate(s, { month: 'short', day: 'numeric' })} ✕
+                {fmtDate(s)} ✕
               </button>
             ))}
           </div>

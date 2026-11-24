@@ -40,7 +40,7 @@ export default function DayView({ data, prefs, setPrefs, start, setStart, onOpen
   for (let h = 0; h <= 24; h++) hours.push(h);
   const hourStep = ppm * 60 < 22 ? 2 : 1;
 
-  const monthLabel = fmtDate(start, { month: size.w >= 500 ? 'long' : 'short', year: 'numeric' });
+  const monthLabel = start.slice(0, 7); // YYYY-MM
 
   return (
     <div className="dayview">
@@ -77,9 +77,9 @@ export default function DayView({ data, prefs, setPrefs, start, setStart, onOpen
                 }}
               >
                 {colW >= 110
-                  ? fmtDate(d, { weekday: 'short', month: 'short', day: 'numeric' })
+                  ? fmtDate(d, { weekday: true })
                   : colW >= 56
-                    ? fmtDate(d, { weekday: 'short', day: 'numeric' })
+                    ? `${fmtDate(d, { weekday: true }).slice(0, 3)} ${d.slice(5)}`
                     : `${fmtDate(d, { weekday: 'narrow' })} ${fromKey(d).getDate()}`}
               </button>
               {dl.length > 0 && (

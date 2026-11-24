@@ -3,7 +3,7 @@ import { daysBetween, fmtDate, fmtTime, todayKey } from '../recurrence.js';
 import {
   activeIndex, addNode, getChain, getNode, isDone, moveNode, nextUp, orderWarnings, patchNode, progress, removeNode,
 } from '../tree.js';
-import { Breadcrumb, ColorPicker, Field, ProgressBar, Sheet, TimeInput } from './ui.jsx';
+import { Breadcrumb, ColorPicker, Field, ProgressBar, Sheet, TimeInput, DateInput } from './ui.jsx';
 
 export function dueLabel(date) {
   if (!date) return '';
@@ -71,7 +71,7 @@ function GoalDetail({ sheet, data, node, update, open, onClose }) {
       <div className="meta">
         {node.deadline ? (
           <>
-            ⚑ Due {fmtDate(node.deadline)}
+            ⚑ Due {fmtDate(node.deadline, { weekday: true })}
             {node.time && ` ${fmtTime(node.time)}`}
             {!done && <span className={node.deadline < today ? 'overdue-text' : ''}> · {dueLabel(node.deadline)}</span>}
           </>
@@ -107,7 +107,7 @@ function GoalDetail({ sheet, data, node, update, open, onClose }) {
             <button className="step-main" onClick={() => open({ type: 'goal', path: sp })}>
               <span className="step-num">{i + 1}.</span> {s.title}
               {sprog.total > 1 && <span className="row-side"> {sprog.done}/{sprog.total}</span>}
-              {s.deadline && <span className={`row-side ${!sd && s.deadline < today ? 'overdue-text' : ''}`}> · {fmtDate(s.deadline, { month: 'short', day: 'numeric' })}</span>}
+              {s.deadline && <span className={`row-side ${!sd && s.deadline < today ? 'overdue-text' : ''}`}> · {fmtDate(s.deadline)}</span>}
             </button>
             <button className="icon sm" disabled={i === 0} onClick={() => update((d) => moveNode(d, sp, -1))}>▲</button>
             <button className="icon sm" disabled={i === steps.length - 1} onClick={() => update((d) => moveNode(d, sp, 1))}>▼</button>
@@ -163,7 +163,7 @@ function GoalEditor({ sheet, data, node, update, open, onClose }) {
       </Field>
       <div className="row2">
         <Field label="Deadline">
-          <input type="date" value={f.deadline || ''} onChange={(e) => set({ deadline: e.target.value })} />
+          <DateInput allowEmpty placeholder="none" value={f.deadline || ''} onChange={(deadline) => set({ deadline })} />
         </Field>
         <Field label="Time (optional)">
           <TimeInput allowEmpty value={f.time || ''} onChange={(time) => set({ time })} />

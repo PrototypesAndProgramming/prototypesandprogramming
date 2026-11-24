@@ -113,3 +113,33 @@ export function TimeInput({ value, onChange, allowEmpty }) {
     </div>
   );
 }
+
+/**
+ * Shows the date as YYYY-MM-DD. An invisible native date input sits on top,
+ * so tapping still opens the phone/computer's calendar picker.
+ */
+export function DateInput({ value, onChange, allowEmpty, placeholder = 'YYYY-MM-DD' }) {
+  return (
+    <div className="dateinput">
+      <div className={`dateinput-face ${value ? '' : 'empty'}`}>{value || placeholder}</div>
+      <input
+        type="date"
+        value={value || ''}
+        onChange={(e) => (e.target.value || allowEmpty) && onChange(e.target.value)}
+        aria-label="Date"
+        onClick={(e) => {
+          try {
+            e.currentTarget.showPicker();
+          } catch {
+            /* older browsers open it on tap anyway */
+          }
+        }}
+      />
+      {allowEmpty && value && (
+        <button type="button" className="dateinput-clear" onClick={() => onChange('')} aria-label="Clear date">
+          ✕
+        </button>
+      )}
+    </div>
+  );
+}

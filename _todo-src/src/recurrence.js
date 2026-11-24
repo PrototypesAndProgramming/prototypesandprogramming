@@ -57,8 +57,10 @@ export function fmtTime(hhmm) {
   return fromMinutes(toMinutes(hhmm));
 }
 
-export function fmtDate(key, opts = { weekday: 'short', month: 'short', day: 'numeric' }) {
-  return fromKey(key).toLocaleDateString(undefined, opts);
+// Dates display as YYYY-MM-DD, optionally prefixed with the weekday ("Mon 2026-11-23").
+export function fmtDate(key, opts = {}) {
+  if (opts.weekday === 'narrow') return WEEKDAYS[weekday(key)][0];
+  return opts.weekday ? `${WEEKDAYS[weekday(key)]} ${key}` : key;
 }
 
 /**
@@ -124,7 +126,7 @@ export function describeRepeat(ev) {
       .join(', ');
     s = (n === 1 ? 'Every ' : `Every ${n} weeks on `) + days;
   } else if (r.freq === 'monthly') s = n === 1 ? 'Monthly' : `Every ${n} months`;
-  if (r.until) s += ` until ${fmtDate(r.until, { month: 'short', day: 'numeric', year: 'numeric' })}`;
+  if (r.until) s += ` until ${fmtDate(r.until)}`;
   return s;
 }
 

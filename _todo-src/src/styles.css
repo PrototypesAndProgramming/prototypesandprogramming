@@ -133,6 +133,14 @@ main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .deadline-line::after { content: ''; position: absolute; left: 0; right: 0; top: -7px; height: 14px; }
 .chip-time { color: var(--ink-soft); margin-right: 4px; font-variant-numeric: tabular-nums; }
 .sync-btn { background: none; border: 0; padding: 8px 4px; display: flex; }
+.dateinput { position: relative; }
+.dateinput-face {
+  background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
+  font-variant-numeric: tabular-nums;
+}
+.dateinput-face.empty { color: var(--ink-soft); }
+.dateinput input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.dateinput-clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: none; border: 0; color: var(--ink-soft); padding: 6px; z-index: 1; }
 .timeinput { display: flex; align-items: center; gap: 4px; }
 .timeinput select { flex: 1; text-align: center; font-variant-numeric: tabular-nums; }
 
